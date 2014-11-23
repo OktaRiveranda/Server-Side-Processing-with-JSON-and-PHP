@@ -1,0 +1,43 @@
+<?php
+
+include_once "connection.php";
+
+class Formulir {
+	private $con = "";
+
+    public function __construct() {
+        $objCon = new Connection();
+        $this->con = $objCon->openConnection();
+    }
+	public function getDataUji() {
+        $sql = "SELECT no_uji, pemilik, no_kbm, jenis_kendaraan, tempat, alamat FROM data_uji";
+        try {
+            $query = mysqli_query($this->con, $sql) or mysqli_error($sql);
+        } catch (Exception $ex) {
+            echo "Pesan Kesalahan: ".$ex->getMessage();
+        }  
+        $i=0;      
+        while($data = mysqli_fetch_array($query)) {
+        	$d[$i]['no_uji'] = $data['no_uji'];
+        	$d[$i]['pemilik'] = $data['pemilik'];
+        	$d[$i]['no_kbm'] = $data['no_kbm'];
+        	$d[$i]['jenis_kendaraan'] = $data['jenis_kendaraan'];
+        	$d[$i]['tempat'] = $data['tempat'];
+        	$d[$i]['alamat'] = $data['alamat'];        	
+        	$i++;
+        }
+        return json_encode($d);
+    }
+}
+
+$objForm = new Formulir();
+$data = $objForm->getDataUji();
+
+echo $data;
+echo "<hr />";
+
+$data2 = json_decode($data, true);
+for($i=0; $i<count($data2);$i++) {
+	echo $data2[$i]['no_uji']." dengan nama ".$data2[$i]['pemilik']."<br />";
+}
+?>
